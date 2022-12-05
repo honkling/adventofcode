@@ -1,0 +1,43 @@
+function displayStack(stack: strings) :: string:
+	return "'&f%join {_stack::*} with "&7', '&f"%&7'"
+
+on script load:
+	set {_} to now
+	set {-day5} to getInput(5)
+	broadcast "&7Loaded Day 5 input in &f%difference between now and {_}%&7."
+
+command day5 <boolean = false>:
+	trigger:
+		set {_pile::*} to reversed findAll("( {3}|\[.\])\s", {-day5})
+		set {_columns} to first element of findAll("\d(?! {3})", {-day5}) parsed as int
+		loop {_pile::*}:
+			loop-value starts with "["
+			set {_i} to ({_columns} + 1) - (mod(loop-index parsed as int - 1, {_columns}) + 1)
+			add loop-value.trim() to {_stacks::%{_i}%::*}
+
+		set {_instructions::*} to findAll("move (\d+) from (\d) to (\d)", {-day5}, (1, 2 and 3))
+		loop (size of {_instructions::*} / 3) times:
+			delete {_instruction::*} and {_order::*}
+			add {_instructions::%loop-value * 3 - 2%} parsed as int to {_instruction::*}
+			add {_instructions::%loop-value * 3 - 1%} parsed as int to {_instruction::*}
+			add {_instructions::%loop-value * 3%} parsed as int to {_instruction::*}
+
+			loop {_instruction::1} times:
+				set {_top} to last element of ({_stacks::%{_instruction::2}%::*} where [input is set])
+				delete {_stacks::%{_instruction::2}%::%size of {_stacks::%{_instruction::2}%::*}%}
+				add {_top} to {_order::*}
+			
+			set {_order::*} to reversed {_order::*} if arg-1 is true
+			add {_order::*} to {_stacks::%{_instruction::3}%::*}
+		
+		set {_answer} to ""
+		loop indices of {_stacks::*}:
+			set {_top} to last element of ({_stacks::%loop-value%::*} where [input is set])
+			replace all "[" and "]" in {_top} with ""
+			set {_answer} to "%{_answer}%%{_top}%"
+			
+		send "&7Your answer is &f%{_answer}%&7."
+
+command day5part2:
+	trigger:
+		player command "day5 true"

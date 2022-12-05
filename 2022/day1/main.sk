@@ -1,0 +1,29 @@
+on script load:
+	set {_} to now
+	set {-day1} to getInput(1)
+	broadcast "&7Loaded Day 1 input in &f%difference between now and {_}%&7."
+
+command day1:
+	trigger:
+		send "&7Sorting elf contents..."
+		set {_} to now
+	
+		set {_matches::*} to {-day1} split at "%nl%%nl%"
+		send "&7Found &f%size of {_matches::*}% &7matches."
+		loop {_matches::*}:
+			set {_sum} to 0
+
+			loop loop-value split at nl:
+				add loop-value-2 parsed as int to {_sum}
+
+			add {_sum} to {_elves::*}
+
+		send "&7Summed elf contents in &f%difference between now and {_}%&7."
+
+		set {_elves::*} to reversed sorted {_elves::*}
+		
+		send "&7Sorted elf contents in &f%difference between now and {_}%&7."
+		send "&7Found &f%size of {_elves::*}% &7elves."
+		
+		send "&7The top elf carries &f%{_elves::1}%&7."
+		send "&7The top three elves carry &f%{_elves::1} + {_elves::2} + {_elves::3}% &7in total."

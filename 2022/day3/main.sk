@@ -1,0 +1,40 @@
+function getPriority(char: string) :: num:
+	set {_offset} to 26 if (uppercase {_char}).equals({_char}) is true else 0
+	set {_priority} to (index of lowercase {_char} in "abcdefghijklmnopqrstuvwxyz") + ({_offset} ? 0)
+	return {_priority}
+
+on script load:
+	set {_} to now
+	set {-day3} to getInput(3)
+	broadcast "&7Loaded Day 3 input in &f%difference between now and {_}%&7."
+
+command day3:
+	trigger:
+		set {_sum} to 0
+		loop {-day3} split at nl:
+			set {_compartmentSize} to length of loop-value / 2
+			set {_compartments::*} to findAll("[a-zA-Z]{%{_compartmentSize}%}", loop-value)
+
+			loop {_compartments::1} split at "":
+				{_compartments::2}.contains(loop-value-2) is true
+				loop-value-2 isn't ""
+				add getPriority(loop-value-2) to {_sum}
+				stop loop
+		
+		send "&7The total priority is &f%{_sum}%&7."
+
+command day3part2:
+	trigger:
+		set {_sum} to 0
+		loop findAll("([a-zA-Z]+\n?){3}", {-day3}):
+			set {_sacks::*} to loop-value split at nl
+			
+			loop {_sacks::1} split at "":
+				loop-value-2 isn't ""
+				{_sacks::2}.contains(loop-value-2) is true
+				{_sacks::3}.contains(loop-value-2) is true
+
+				add getPriority(loop-value-2) to {_sum}
+				stop loop
+		
+		send "&7The total priority is &f%{_sum}%&7."

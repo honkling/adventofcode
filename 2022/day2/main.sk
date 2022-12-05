@@ -1,0 +1,58 @@
+function calculateScore(followingInstructions: boolean, rounds: strings) :: int:
+	loop {_rounds::*}:
+		set {_chunks::*} to loop-value split at " "
+		set {_opponent} to {_chunks::1}
+		set {_decision} to {_chunks::2}
+		set {_result} to 3 # Draw (6 = Win, 0 = Loss)
+
+		if {_followingInstructions} is true:
+			if {_decision} is "X":
+				set {_decision} to "X" if {_opponent} is "B"
+				set {_decision} to "Y" if {_opponent} is "C"
+				set {_decision} to "Z" if {_opponent} is "A"
+
+			else if {_decision} is "Y":
+				set {_decision} to "X" if {_opponent} is "A"
+				set {_decision} to "Y" if {_opponent} is "B"
+				set {_decision} to "Z" if {_opponent} is "C"
+
+			else if {_decision} is "Z":
+				set {_decision} to "X" if {_opponent} is "C"
+				set {_decision} to "Y" if {_opponent} is "A"
+				set {_decision} to "Z" if {_opponent} is "B"
+
+		if {_opponent} is "A":
+			# Rock
+			set {_result} to 6 if {_decision} is "Y"
+			set {_result} to 0 if {_decision} is "Z"
+
+		if {_opponent} is "B":
+			# Paper
+			set {_result} to 0 if {_decision} is "X"
+			set {_result} to 6 if {_decision} is "Z"
+
+		if {_opponent} is "C":
+			# Scissors
+			set {_result} to 6 if {_decision} is "X"
+			set {_result} to 0 if {_decision} is "Y"
+
+		add 1 to {_score} if {_decision} is "X"
+		add 2 to {_score} if {_decision} is "Y"
+		add 3 to {_score} if {_decision} is "Z"
+
+		add {_result} to {_score}
+	
+	return {_score}
+
+on script load:
+	set {_} to now
+	set {-day2} to getInput(2)
+	broadcast "&7Loaded Day 2 input in &f%difference between now and {_}%&7."
+
+command day2:
+	trigger:
+		set {_rounds::*} to {-day2} split at nl
+		set {_score} to 0
+
+		send "&7Your score when using reason is &f%calculateScore(false, {_rounds::*})%&7."
+		send "&7Your score when following instructions is &f%calculateScore(true, {_rounds::*})%&7."

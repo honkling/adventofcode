@@ -1,0 +1,50 @@
+function range(input: string) :: integers:
+    set {_r::*} to {_input} split at "-"
+    loop {_r::*}:
+        set {_r::%loop-index%} to loop-value parsed as int
+
+    set {_d} to {_r::2} - {_r::1} + 1
+    set {_i} to {_r::1}
+    while {_i} <= {_r::2}:
+        add {_i} to {_range::*}
+        add 1 to {_i}
+
+    return {_range::*}
+
+on script load:
+	set {_} to now
+	set {-day4} to getInput(4)
+	broadcast "&7Loaded Day 4 input in &f%difference between now and {_}%&7."
+
+command day4:
+    trigger:
+        set {_pairs::*} to {-day4} split at nl
+        loop {_pairs::*}:
+            set {_ranges::*} to loop-value split at ","
+            set {_values::1::*} to range({_ranges::1})
+            set {_values::2::*} to range({_ranges::2})
+
+            if size of {_values::2::*} > size of {_values::1::*}:
+                set {_original::*} to {_values::1::*}
+                set {_values::1::*} to {_values::2::*}
+                set {_values::2::*} to {_original::*}
+
+            {_values::1::*} contains {_values::2::*}
+            add 1 to {_boxedTasks}
+        
+        send "&7There are &f%{_boxedTasks} ? 0% &7boxed ranges."
+
+command day4part2:
+    trigger:
+        set {_pairs::*} to {-day4} split at nl
+        loop {_pairs::*}:
+            set {_ranges::*} to loop-value split at ","
+            set {_values::1::*} to range({_ranges::1})
+            set {_values::2::*} to range({_ranges::2})
+
+            loop {_values::1::*}:
+                {_values::2::*} contains loop-value-2
+                add 1 to {_overlappingTasks} 
+                stop loop
+
+        send "&7There are &f%{_overlappingTasks} ? 0% &7overlapping tasks."

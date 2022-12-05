@@ -1,0 +1,22 @@
+import:
+    java.util.regex.Matcher
+    java.util.regex.Pattern
+    java.io.File
+    java.nio.file.Files
+
+function findAll(regex: string, input: string, groups: integers = 0) :: strings:
+    set {_pattern} to Pattern.compile({_regex}, Pattern.MULTILINE)
+    set {_matcher} to {_pattern}.matcher({_input})
+
+    while {_matcher}.find() is true:
+        loop {_groups::*}:
+            add {_matcher}.group(loop-value) to {_matches::*}
+
+    return {_matches::*}
+
+function readFile(path: string) :: string:
+    set {_path} to new File({_path}).toPath()
+    return join ...Files.lines({_path}).toArray() with nl
+
+function getInput(day: int) :: string:
+    return readFile("/home/minecraft/server/plugins/Skript/scripts/day%{_day}%/input.txt")
